@@ -6,12 +6,13 @@ flag=$2
 
 
 if [[ "$action" == "create" ]]; then
-    echo "Running 'create'"
+    echo "Running create"
 
     # If -f is present, shift arguments
 	# Usage:
 	#  loop create -f 1 10 'QUESTIONS_NO_*'
     if [[ "$flag" == "-f" ]]; then
+	    echo "Flag -f"
         start=$3
         end=$4
         pattern=$5
