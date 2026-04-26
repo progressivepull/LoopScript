@@ -32,19 +32,21 @@ chmod +x loop.sh
 
 ## **Run the create action**
 
+**-f Flag**
+
 **What the Script Does**
 
 The loop script creates multiple folders using a number range.  
 It replaces the * in a name pattern with numbers.
 
 ```
-./loop create <start> <end> '<pattern>'
+loop.sh create -f <start> <end> '<pattern>'
 ```
 
 **Example Usage**
 
 ```
-./loop.sh create 1 10 'QUESTIONS_NO_*'
+loop.sh create -f 1 10 'QUESTIONS_NO_*'
 ```
 
 **What Happens**
@@ -77,7 +79,7 @@ This prevents the system from misinterpreting the *.
 Create folders from 5 to 8:
 
 ```
-./loop.sh create 5 8 'TASK_*'
+loop.sh create -f 5 8 'TASK_*'
 ```
 
 Result:
@@ -93,13 +95,13 @@ TASK_8
 
 - Not using quotes:
 
-./loop create 1 10 QUESTIONS_NO_*
+loop.sh create -f 1 10 QUESTIONS_NO_*
 
 ❌ This may not work correctly
 
 - Missing arguments:
 
-./loop create
+loop.sh create -f
 
 ❌ Not enough information provided
 
