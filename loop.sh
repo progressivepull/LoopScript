@@ -1,35 +1,46 @@
 #!/bin/bash
 
+# ─────────────────────────────────────────────
+# COLOR SETUP
+# ─────────────────────────────────────────────
+RED="\e[31m"
+GREEN="\e[32m"
+YELLOW="\e[33m"
+BLUE="\e[34m"
+RESET="\e[0m"
+
 action=$1
 flag=$2
 
 show_help() {
-    echo ""
-    echo "Usage:"
+    echo -e "${BLUE}Usage:${RESET}"
     echo "  loop.sh create -f <start> <end> '<pattern>'"
-    echo "      Create folders by replacing * in the pattern with numbers."
     echo ""
-    echo "  loop.sh delete <file1> [file2 ...]"
-    echo "      Delete one or more files."
+    echo "  loop.sh delete -s <name>"
+    echo "      Delete <name>.md and <name>_media in all directories."
+    echo ""
+    echo "  loop.sh delete -m"
+    echo "      For each PROBLEM_X directory, delete PROBLEM_X.md and PROBLEM_X_media."
     echo ""
     echo "  loop.sh delete -d <folder>"
     echo "      Delete a folder."
     echo ""
-    echo "  loop.sh convert -s <file_name>"
-    echo "      Convert <file_name>.docx → <file_name>.md using pandoc."
+    echo "  loop.sh delete ... --dry"
+    echo "      Show what WOULD be deleted (no changes)."
     echo ""
+    echo "  loop.sh status"
+    echo "      Show .md and _media files found in the project."
+    echo ""
+    echo "  loop.sh clean"
+    echo "      SAFE MODE: Show everything that would be deleted recursively."
+    echo "      (Deletion lines are commented out.)"
+    echo ""
+    echo "  loop.sh convert -s <file>"
     echo "  loop.sh convert -m"
-    echo "      Convert ALL .docx files (recursively) to .md using pandoc."
-    echo ""
     echo "  loop.sh move"
-    echo "      Move files into folders with matching names (e.g., file.txt → file/)."
-    echo ""
     echo "  loop.sh help"
-    echo "      Show this help menu."
     echo ""
 }
-
-
 
 # HELP
 if [[ "$action" == "help" || -z "$action" ]]; then
@@ -37,163 +48,223 @@ if [[ "$action" == "help" || -z "$action" ]]; then
     exit 0
 fi
 
-# CREATE
-if [[ "$action" == "create" ]]; then
-    echo "Running create"
 
+# ─────────────────────────────────────────────
+# CREATE
+# ─────────────────────────────────────────────
+if [[ "$action" == "create" ]]; then
     if [[ "$flag" == "-f" ]]; then
-        echo "Flag -f"
         start=$3
         end=$4
         pattern=$5
 
-        if [[ -z "$start" || -z "$end" || -z "$pattern" ]]; then
-            echo "Usage: loop.sh create -f <start> <end> '<pattern>'"
-            exit 1
-        fi
-
-        if ! [[ "$start" =~ ^[0-9]+$ && "$end" =~ ^[0-9]+$ ]]; then
-            echo "Error: start and end must be integers"
-            exit 1
-        fi
-
-        if (( start > end )); then
-            echo "Error: start must be <= end"
-            exit 1
-        fi
-
         for ((i=start; i<=end; i++)); do
-            folder_name="${pattern//\*/$i}"
-            mkdir -p "$folder_name"
-            echo "Created: $folder_name"
+            folder="${pattern//\*/$i}"
+            mkdir -p "$folder"
+            echo -e "${GREEN}Created:${RESET} $folder"
         done
     fi
 fi
 
-# DELETE
-if [[ "$action" == "delete" ]]; then
-    echo "Running delete"
 
-    # Delete folder mode
+# ─────────────────────────────────────────────
+# DELETE
+# ─────────────────────────────────────────────
+if [[ "$action" == "delete" ]]; then
+
+    dry_run=false
+    for arg in "$@"; do
+        if [[ "$arg" == "--dry" ]]; then dry_run=true; fi
+    done
+
+    # DELETE FOLDER
     if [[ "$flag" == "-d" ]]; then
         folder="$3"
 
-        if [[ -z "$folder" ]]; then
-            echo "Usage: loop.sh delete -d <folder>"
-            exit 1
+        if [[ "$dry_run" == true ]]; then
+            echo -e "${YELLOW}[DRY] Would delete folder:${RESET} $folder"
+            exit 0
         fi
 
         if [[ -d "$folder" ]]; then
-            rm -r "$folder"
-            echo "Deleted folder: $folder"
+            # rm -r "$folder"
+            echo -e "${GREEN}Deleted folder:${RESET} $folder"
         else
-            echo "Folder '$folder' does not exist"
+            echo -e "${RED}Folder not found:${RESET} $folder"
         fi
+        exit 0
+    fi
+
+    # DELETE SPECIFIC NAME ACROSS ALL DIRECTORIES
+    if [[ "$flag" == "-s" ]]; then
+	    echo -e "${BLUE} DELETE SPECIFIC NAME ACROSS ALL DIRECTORIES"
+        name="$3"
+        shopt -s globstar nullglob
+
+        for dir in **/; do
+            md="${dir}${name}.md"
+            media="${dir}${name}_media"
+
+            if [[ -f "$md" ]]; then
+                if [[ "$dry_run" == true ]]; then
+                    echo -e "${YELLOW}[DRY] Would delete:${RESET} $md"
+                else
+                    # rm "$md"
+                    echo -e "${GREEN}Deleted:${RESET} $md"
+                fi
+            fi
+
+            if [[ -d "$media" ]]; then
+                if [[ "$dry_run" == true ]]; then
+                    echo -e "${YELLOW}[DRY] Would delete:${RESET} $media"
+                else
+                    # rm -r "$media"
+                    echo -e "${GREEN}Deleted:${RESET} $media"
+                fi
+            fi
+        done
 
         exit 0
     fi
 
-    # Delete multiple files
-    shift 1  # remove "delete"
-    if [[ $# -eq 0 ]]; then
-        echo "Usage: loop.sh delete <file1> [file2 ...]"
-        exit 1
+    # DELETE MODE FOR PROBLEM_X
+    if [[ "$flag" == "-m" ]]; then
+        for d in PROBLEM_*; do
+            [[ ! -d "$d" ]] && continue
+
+            md="${d}/${d}.md"
+            media="${d}/${d}_media"
+
+            if [[ -f "$md" ]]; then
+                if [[ "$dry_run" == true ]]; then
+                    echo -e "${YELLOW}[DRY] Would delete:${RESET} $md"
+                else
+                    # rm "$md"
+                    echo -e "${GREEN}Deleted:${RESET} $md"
+                fi
+            fi
+
+            if [[ -d "$media" ]]; then
+                if [[ "$dry_run" == true ]]; then
+                    echo -e "${YELLOW}[DRY] Would delete:${RESET} $media"
+                else
+                    # rm -r "$media"
+                    echo -e "${GREEN}Deleted:${RESET} $media"
+                fi
+            fi
+        done
+
+        exit 0
     fi
 
-    for file in "$@"; do
-        if [[ -e "$file" ]]; then
-            rm "$file"
-            echo "Deleted file: $file"
-        else
-            echo "File '$file' does not exist"
-        fi
-    done
+    echo "Usage: loop.sh delete -s <name> | -m | -d <folder> [--dry]"
+    exit 1
 fi
 
-# CONVERT
-if [[ "$action" == "convert" ]]; then
-    echo "Running convert"
 
-    # Convert a single file
+# ─────────────────────────────────────────────
+# STATUS
+# ─────────────────────────────────────────────
+if [[ "$action" == "status" ]]; then
+    echo -e "${BLUE}Scanning project...${RESET}"
+    shopt -s globstar nullglob
+
+    echo -e "${GREEN}.md files:${RESET}"
+    for f in **/*.md; do
+        echo "  $f"
+    done
+
+    echo ""
+    echo -e "${GREEN}_media folders:${RESET}"
+    for d in **/*_media; do
+        [[ -d "$d" ]] && echo "  $d"
+    done
+
+    exit 0
+fi
+
+
+# ─────────────────────────────────────────────
+# CLEAN (SAFE MODE)
+# ─────────────────────────────────────────────
+if [[ "$action" == "clean" ]]; then
+    echo -e "${YELLOW}SAFE CLEAN MODE — NO FILES WILL BE DELETED${RESET}"
+    echo -e "${YELLOW}Delete lines are commented out in this script.${RESET}"
+    echo ""
+
+    shopt -s globstar nullglob
+
+    for f in **/*.md; do
+        echo -e "${YELLOW}[DRY] Would delete:${RESET} $f"
+        # rm "$f"
+    done
+
+    for d in **/*_media; do
+        if [[ -d "$d" ]]; then
+            echo -e "${YELLOW}[DRY] Would delete:${RESET} $d"
+            # rm -r "$d"
+        fi
+    done
+
+    exit 0
+fi
+
+
+# ─────────────────────────────────────────────
+# CONVERT
+# ─────────────────────────────────────────────
+if [[ "$action" == "convert" ]]; then
+
     if [[ "$flag" == "-s" ]]; then
         file="$3"
-
-        if [[ -z "$file" ]]; then
-            echo "Usage: loop.sh convert -s <file_name>"
-            exit 1
-        fi
-
         if [[ ! -f "${file}.docx" ]]; then
-            echo "Error: ${file}.docx not found"
+            echo -e "${RED}Error:${RESET} ${file}.docx not found"
             exit 1
         fi
 
         pandoc -t gfm --extract-media . "${file}.docx" -o "${file}.md"
-        echo "Converted ${file}.docx → ${file}.md"
+        echo -e "${GREEN}Converted:${RESET} ${file}.docx → ${file}.md"
         exit 0
     fi
 
-    # Convert ALL .docx files in all folders
     if [[ "$flag" == "-m" ]]; then
-  echo "Converting all .docx files..."
+        shopt -s globstar nullglob
+        docx_files=( **/*.docx )
 
-    shopt -s globstar nullglob
-    docx_files=( **/*.docx )
+        for f in "${docx_files[@]}"; do
+            dir=$(dirname "$f")
+            file=$(basename "$f")
+            base="${file%.docx}"
+            media="${base}_media"
 
-    if [[ ${#docx_files[@]} -eq 0 ]]; then
-        echo "No .docx files found."
-        exit 1
+            (
+                cd "$dir" || exit
+                pandoc --from=docx --to=gfm --extract-media="$media" --wrap=none "$file" -o "${base}.md"
+            )
+
+            echo -e "${GREEN}Converted:${RESET} $f → $dir/${base}.md"
+        done
+
+        exit 0
     fi
 
-    for f in "${docx_files[@]}"; do
-        dir=$(dirname "$f")        # folder containing the .docx
-        file=$(basename "$f")      # filename.docx
-        base="${file%.docx}"       # filename
-        media_dir="${base}_media"  # filename_media
-
-        echo "Processing: $f"
-
-        (
-            cd "$dir" || exit
-
-            pandoc \
-                --from=docx \
-                --to=gfm \
-                --extract-media="${media_dir}" \
-                --wrap=none \
-                "$file" -o "${base}.md"
-        )
-
-        echo "Converted $f → $dir/${base}.md"
-        echo "Media extracted to: $dir/${media_dir}/"
-    done
-
-    exit 0
-    fi
-
-    echo "Usage:"
-    echo "  loop.sh convert -s <file_name>"
-    echo "  loop.sh convert -m"
+    echo "Usage: loop.sh convert -s <file> | -m"
     exit 1
 fi
 
+
+# ─────────────────────────────────────────────
 # MOVE
+# ─────────────────────────────────────────────
 if [[ "$action" == "move" ]]; then
-    echo "Running move"
-
     shopt -s nullglob
-
     for file in *; do
-        # Skip directories
         [[ -d "$file" ]] && continue
-
-        base="${file%.*}"   # remove extension
-
+        base="${file%.*}"
         if [[ -d "$base" ]]; then
-            echo "Moving '$file' → '$base/'"
             mv "$file" "$base/"
+            echo -e "${GREEN}Moved:${RESET} $file → $base/"
         fi
     done
-
     exit 0
 fi
