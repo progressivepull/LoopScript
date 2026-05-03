@@ -1,10 +1,8 @@
-<img src="PROBLEM_2/PROBLEM_2_media/media/image1.png"
-style="width:1.84401in;height:0.66676in" />
+<img src="PROBLEM_2/PROBLEM_2_media/media/image1.png" style="width:1.84401in;height:0.66676in" />
 
 **Lists and Loops**
 
-Lists store collections of items, and for loops are the primary way to
-iterate through them.
+Lists store collections of items, and for loops are the primary way to iterate through them.
 
 \# Create a list of items
 

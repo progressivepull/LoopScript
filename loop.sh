@@ -148,13 +148,19 @@ if [[ "$action" == "convert" ]]; then
     for f in "${docx_files[@]}"; do
         base="${f%.docx}"
 
-        # Extract media into a folder named "<base>_media"
+        # Media folder: PROBLEM_1_media
         media_dir="${base}_media"
 
-        pandoc -t gfm --extract-media="${media_dir}" "$f" -o "${base}.md"
+        # Convert with HTML image tags + custom media folder
+        pandoc \
+            --from=docx \
+            --to=gfm \
+            --extract-media="${media_dir}" \
+            --wrap=none \
+            "$f" -o "${base}.md"
 
         echo "Converted $f → ${base}.md"
-        echo "Media left in: ${media_dir}/"
+        echo "Media extracted to: ${media_dir}/"
     done
 
     exit 0
