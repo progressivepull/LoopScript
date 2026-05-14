@@ -1,113 +1,131 @@
-# Scripts
+# LoopScript
 
-# Say Hello
+# Reference
+## Pandoc
+* [Pandoc Official Website](https://pandoc.org/)
 
-Make it executable:
-
+``` bash
+pandoc -t gfm --extract-media . "main.docx" -o main.md
 ```
-chmod +x say_hello.sh
+
+## Microsoft Word Code Style
+* [MS Word Create style for code snippet box  | Leon Renner | YouTube](https://www.youtube.com/watch?v=busnzKKSOxU)
+
+---
+# loop.sh
+
+## 📦 Installation
+Make the script executable:
+
+``` bash
+chmod +x loop.sh
 ```
 Run it:
 
-```
-say_loop.sh
-```
-You’ll see:
-
-```
-Hello
+``` bash
+./loop.sh help
 ```
 
-# Loop
+## 📁 Folder Creation
 
-## How to Use the **loop** Script
+Create a range of folders using a pattern:
 
-## **Make Sure the Script Is Executable**
+``` bash
+./loop.sh create -f <start> <end> '<pattern>'
+```
+Example:
 
-Run this once:
+``` bash
+./loop.sh create -f 1 5 'PROBLEM_*'
+```
+Creates:
 
 ```
-chmod +x loop.sh
+PROBLEM_1
+PROBLEM_2
+PROBLEM_3
+PROBLEM_4
+PROBLEM_5
 ```
 
-## **Run the create action**
 
-**-f Flag**
+## 🗑️ Deleting Files and Folders
 
-**What the Script Does**
+All delete commands support dry‑run mode:
 
-The loop script creates multiple folders using a number range.  
-It replaces the * in a name pattern with numbers.
-
-```
-loop.sh create -f <start> <end> '<pattern>'
+``` bash
+--dry
 ```
 
-**Example Usage**
+### Delete a specific name everywhere
 
+Deletes:
+
+* <name>.md
+* <name>_media/
+
+``` bash
+./loop.sh delete -s <name>
 ```
-loop.sh create -f 1 10 'QUESTIONS_NO_*'
+### Delete inside each PROBLEM_X directory
+
+``` bash
+./loop.sh delete -m
 ```
-
-**What Happens**
-
-This command will create the following folders:
-
-```
-QUESTIONS_NO_1 
-QUESTIONS_NO_2  
-QUESTIONS_NO_3  
-...  
-QUESTIONS_NO_10
-```
-
-**Important Notes**
-
-- Always put the pattern in **quotes**:
-
-```
-'QUESTIONS_NO_*'
+### Delete a folder
+``` bash
+./loop.sh delete -d <folder>
 ```
 
-This prevents the system from misinterpreting the *.
+### Example dry‑run
 
-- &lt;start&gt; and &lt;end&gt; must be **numbers**.
-- The script only supports the create command.
-
-**More Examples**
-
-Create folders from 5 to 8:
-
-```
-loop.sh create -f 5 8 'TASK_*'
+``` bash
+./loop.sh delete -s PROBLEM_3 --dry
 ```
 
-Result:
+## 🔄 Converting Documents
 
+### Convert a single .docx file
+
+``` bash
+./loop.sh convert -s <file_name>
 ```
-TASK_5  
-TASK_6  
-TASK_7  
-TASK_8
+
+### Convert all .docx files recursively
+
+``` bash
+./loop.sh convert -m
 ```
 
-**Common Mistakes**
+Each .docx produces:
 
-- Not using quotes:
+* <name>.md
+* <name>_media/
+  
+## 📦 Move Files Into Matching Folders
+Moves any file into a folder with the same base name:
 
-loop.sh create -f 1 10 QUESTIONS_NO_*
+``` bash
+./loop.sh move
+```
+Example:
 
-❌ This may not work correctly
+``` bash
+notes.txt → notes/notes.txt
+```
 
-- Missing arguments:
+## 📊 Project Status
+Scan the entire project for .md files and _media folders:
 
-loop.sh create -f
+``` bash
+./loop.sh status
+```  
 
-❌ Not enough information provided
+## 🧹 Clean (Safe Mode)
+Lists everything that would be deleted:
 
-**Summary**
-
-- Use create to make folders
-- Provide a start number, end number, and a pattern
-- Use * where the number should go
-- Always wrap the pattern in quotes
+``` bash
+./loop.sh clean
+```
+This mode is non‑destructive.
+Deletion lines are commented out in the script for safety.
