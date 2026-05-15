@@ -23,11 +23,13 @@ rm -rf test_project_status
 echo "----------- clean_safe_mode -----------"
 ./clean_safe_mode.sh
 
-# echo "----------- converting_documents -----------"
-# ./converting_documents.sh
+echo "----------- converting_documents -----------"
+./converting_documents.sh 1
+./converting_documents.sh 2
 
 echo "----------- deleting_files_and_folders -----------"
-./deleting_files_and_folders.sh
+./deleting_files_and_folders.sh 1
+./deleting_files_and_folders.sh 2
 
 echo "----------- folder_creation -----------"
 ./folder_creation.sh

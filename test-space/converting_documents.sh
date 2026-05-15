@@ -6,14 +6,17 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOOP_SCRIPT="$SCRIPT_DIR/../loop.sh"
 
+# Source colors.sh from parent (LoopScript/)
+source "$SCRIPT_DIR/../colors.sh"
+
 TEST_DIR="test_converting_documents"
 
 action=$1
 
 select_menu() {
-echo -e "${BLUE}Select the test you want to run:${RESET}"
-echo -e "${CYAN}1${RESET}) convert -s sample"
-echo -e "${CYAN}2${RESET}) convert -m (recursive)"
+    echo -e "${BLUE}Select the test you want to run:${RESET}"
+    echo -e "${CYAN}1${RESET}) convert -s sample"
+    echo -e "${CYAN}2${RESET}) convert -m (recursive)"
 }
 
 echo -e "${BLUE}Running test: converting documents${RESET}"
@@ -29,11 +32,12 @@ cd "$TEST_DIR" || exit
 # ─────────────────────────────────────────────
 echo -e "${BLUE}Setting up test environment...${RESET}"
 
-mkdir A B
+mkdir single many many/PROBLEM_1 many/PROBLEM_2
 
-# Create fake .docx files (pandoc requires real files, so we create minimal valid ZIP containers)
-echo "PK" > A/sample.docx
-echo "PK" > B/another.docx
+cp "$SCRIPT_DIR/test-files/single.docx" "single/single.docx"
+cp "$SCRIPT_DIR/test-files/PROBLEM_1.docx" "many/PROBLEM_1/PROBLEM_1.docx"
+cp "$SCRIPT_DIR/test-files/PROBLEM_2.docx" "many/PROBLEM_2/PROBLEM_2.docx"
+
 
 echo -e "${MAGENTA}Environment ready.${RESET}"
 echo ""
@@ -44,29 +48,30 @@ echo ""
 
 if [[ "$action" == "1" ]]; then
 
-	echo "TEST 1: convert -s sample"
-	$LOOP_SCRIPT convert -s A/sample
+	echo "TEST 1: convert -s single"
+	
+	cd "$SCRIPT_DIR/$TEST_DIR/single"
+
+	$LOOP_SCRIPT convert -s single
 
 	echo ""
 	echo "Checking results..."
-
+	
 	PASS=true
 
-	if [[ -f A/sample.md ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} sample.md created"
+	if [[ -f single.md ]]; then
+		echo -e "${GREEN} ✔ PASS:${RESET} single.md created"
 	else
-		echo -e "${RED}✘ FAIL:${RESET} sample.md missing"
+		echo -e "${RED}✘ FAIL:${RESET} single.md missing"
 		PASS=false
 	fi
-
-	if [[ -d A/sample_media ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} sample_media folder created"
+	
+	if [[ -f media/image1.png ]]; then
+		echo -e "${GREEN} ✔ PASS:${RESET} media/image1.png created"
 	else
-		echo -e "${RED}✘ FAIL:${RESET} sample_media missing"
+		echo -e "${RED}✘ FAIL:${RESET} media/image1.png missing"
 		PASS=false
 	fi
-
-	echo ""
 fi
 
 # ─────────────────────────────────────────────
@@ -75,39 +80,63 @@ fi
 
 if [[ "$action" == "2" ]]; then
 	echo "TEST 2: convert -m"
+	
+	cd "$SCRIPT_DIR/$TEST_DIR/many"
+	
 	$LOOP_SCRIPT convert -m
-
+	
 	echo ""
 	echo "Checking results..."
+	
+	PASS=true
 
-	if [[ -f B/another.md ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} another.md created"
+	if [[ -f PROBLEM_1/PROBLEM_1.md ]]; then
+		echo -e "${GREEN} ✔ PASS:${RESET} PROBLEM_1/PROBLEM_1.md created"
 	else
-		echo -e "${RED}✘ FAIL:${RESET} another.md missing"
+		echo -e "${RED}✘ FAIL:${RESET} PROBLEM_1/PROBLEM_1.md missing"
 		PASS=false
 	fi
-
-	if [[ -d B/another_media ]]; then
-		echo -e "${GREEN} ✔ PASS:${RESET} another_media folder created"
+	
+		if [[ -f PROBLEM_1/PROBLEM_1_media/media/image1.png ]]; then
+		echo -e "${GREEN} ✔ PASS:${RESET} PROBLEM_1/PROBLEM_1_media/media/image1.png created"
 	else
-		echo -e "${RED}✘ FAIL:${RESET} another_media missing"
+		echo -e "${RED}✘ FAIL:${RESET} PROBLEM_1/PROBLEM_1_media/media/image1.png missing"
 		PASS=false
 	fi
-
-	echo ""
+	
+		if [[ -f PROBLEM_2/PROBLEM_2.md ]]; then
+		echo -e "${GREEN} ✔ PASS:${RESET} PROBLEM_2/PROBLEM_2.md created"
+	else
+		echo -e "${RED}✘ FAIL:${RESET} PROBLEM_2/PROBLEM_2.md missing"
+		PASS=false
+	fi
+	
+		if [[ -f PROBLEM_2/PROBLEM_2_media/media/image1.png ]]; then
+		echo -e "${GREEN} ✔ PASS:${RESET} PROBLEM_2/PROBLEM_2_media/media/image1.png created"
+	else
+		echo -e "${RED}✘ FAIL:${RESET} PROBLEM_2/PROBLEM_2_media/media/image1.png missing"
+		PASS=false
+	fi
+	
 fi
 
 # ─────────────────────────────────────────────
 # FINAL RESULT
 # ─────────────────────────────────────────────
-if [[ "$PASS" == true ]]; then
-    echo -e "🎉 All convert tests ${GREEN}PASSED!${RESET}"
-else
-    echo -e "❌ Some convert tests ${RED}FAILED.${RESET}"
+if [[ "$action" == "1" || "$action" == "2" ]]; then
+
+	if [[ "$PASS" == true ]]; then
+		echo -e "🎉 All convert tests ${GREEN}PASSED!${RESET}"
+	else
+		echo -e "❌ Some convert tests ${RED}FAILED.${RESET}"
+	fi
+	
+	echo ""
+    echo "Test directory located at: $TEST_DIR/"
+
 fi
 
-echo ""
-echo "Test directory located at: $TEST_DIR/"
+
 
 # Check if an argument was provided
 if [ -z "$1" ]; then
