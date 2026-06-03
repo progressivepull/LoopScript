@@ -50,18 +50,22 @@ Create sequentially numbered folders using a wildcard pattern:
 
 Code
 
+``` bash
 loop.sh create -f \<start\> \<end\> '\<pattern\>'
+```
 
 Example:
 
 Code
 
+``` bash
 loop.sh create -f 1 5 'chapter\_\*'
+```
 
 Creates:
 
 Code
-
+```
 chapter_1/
 
 chapter_2/
@@ -71,44 +75,49 @@ chapter_3/
 chapter_4/
 
 chapter_5/
+```
 
 **2. 🗑️ Delete Files or Folders**
 
 **Delete a folder:**
 
 Code
-
-loop.sh delete -d \<folder\>
+``` bash
+loop.sh delete -d <folder>
+```
 
 **Delete \<name\>.md and \<name\>\_media everywhere:**
 
 Code
-
-loop.sh delete -s \<name\>
-
+``` bash
+loop.sh delete -s <name>
+```
 **Dry‑run mode (no changes):**
 
 Code
+``` bash
+loop.sh delete -s <name> --dry
 
-loop.sh delete -s \<name\> --dry
-
-loop.sh delete -d \<folder\> --dry
+loop.sh delete -d <folder> --dry
+```
 
 **3. 📊 Status Scan**
 
 List all Markdown files and \_media directories:
 
 Code
-
+``` bash
 loop.sh status
+```
 
 **4. 🔄 Convert .docx → .md**
 
 **Convert a single file:**
 
 Code
-
-loop.sh convert -s \<filename\>
+``` bash
+loop.sh convert -s <filename>
+```
 
 Converts:
 
@@ -119,8 +128,9 @@ filename.docx → filename.md
 **Convert all .docx files recursively:**
 
 Code
-
+``` bash
 loop.sh convert -m
+```
 
 Each file gets its own \<name\>\_media folder.
 
@@ -129,41 +139,46 @@ Each file gets its own \<name\>\_media folder.
 Moves any file into a folder with the same base name:
 
 Code
-
+``` bash
 loop.sh move
+```
 
 Example:
 
 Code
-
+```
 notes.md → notes/notes.md
+```
 
 **6. ✏️ Replace Text in Markdown Files**
 
 Recursively replace text in all .md files:
 
 Code
-
-loop.sh replace -m \<old_text\> \<new_text\>
+``` bash
+loop.sh replace -m <old_text> <new_text>
+```
 
 **7. ➕ Insert Text Into Markdown Files**
 
 **Insert at top:**
 
 Code
-
-loop.sh insert -t "\<text\>"
+``` bash
+loop.sh insert -t "<text>"
+```
 
 **Insert at bottom:**
 
 Code
-
-loop.sh insert -b "\<text\>"
+``` bahs
+loop.sh insert -b "<text>"
+```
 
 **🧩 File Structure Example**
 
 Code
-
+```
 project/
 
 │
@@ -185,6 +200,7 @@ project/
 │ └── ...
 
 └── report.docx
+```
 
 **🛡️ Safety Notes**
 
