@@ -469,7 +469,13 @@ if [[ "$action" == "all" ]]; then
     files=( * )
 
     echo -e "${CYAN}[1/9] CREATE — creating folders for each file${RESET}"
-
+    loop.sh create -m
+	
+	echo -e "${CYAN}[2/9] MOVE — moving files into matching folders${RESET}"
+    loop.sh move
+	
+	echo -e "${CYAN}[2/9] CONVERT -m — converting all .docx files${RESET}"
+    loop.sh convert -m
 
 
 

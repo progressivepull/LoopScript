@@ -8,8 +8,8 @@ rm -rf "$TEST_DIR"
 mkdir -p "$TEST_DIR"
 
 # Copy test .docx files into test-all
-cp PROBLEM_1.docx "$TEST_DIR/"
-cp PROBLEM_2.docx "$TEST_DIR/"
+cp "test-files/PROBLEM_1.docx" "$TEST_DIR/"
+cp "test-files/PROBLEM_2.docx" "$TEST_DIR/"
 
 echo "Copied test files:"
 ls -1 "$TEST_DIR"
@@ -24,7 +24,4 @@ echo "--------------------------------------"
     loop.sh all
 )
 
-echo ""
-echo "Final directory structure:"
-echo "--------------------------------------"
-tree "$TEST_DIR"
+
