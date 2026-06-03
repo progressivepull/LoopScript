@@ -45,6 +45,9 @@ show_help() {
 	echo -e "  ${CYAN}loop.sh${RESET} insert -b <text>"
 	echo -e "      ${RED}Append a line of text to the bottom of all Markdown files recursively.${RESET}"
 	echo -e ""
+    echo -e "  ${CYAN}loop.sh${RESET} insert -d"         
+	echo -e "      ${RED}Dynamic: Folder name at top, README link at bottom${RESET}"
+	echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} help"
 	echo -e "      ${RED}Display available commands, options, examples, and script usage information.${RESET}"
     echo -e ""
@@ -398,6 +401,38 @@ fi
 # Check if the requested action is "insert"
 if [[ "$action" == "insert" ]]; then
 
+    # -------- DYNAMIC MODE (-d) --------
+    # Folder name at top, README link at bottom
+    if [[ "$flag" == "-d" ]]; then
+
+        shopt -s globstar nullglob
+
+        for f in **/*.md; do
+            # Get the name of the immediate parent directory
+            folder_name=$(basename "$(dirname "$f")")
+			folder_name="${folder_name//_/ }"
+			echo "$folder_name"
+            
+            # Create temporary file for top insertion
+            tmp=$(mktemp)
+
+            # Insert folder name at the top
+            echo "# $folder_name" > "$tmp"
+            echo "" >> "$tmp"  # Adds a newline for spacing
+            cat "$f" >> "$tmp"
+
+            # Replace original file
+            mv "$tmp" "$f"
+
+            # Append README link to the bottom
+            echo -e "\n# [README](./../../../README.md)" >> "$f"
+
+            echo -e "${GREEN}Processed (Dynamic):${RESET} $f"
+        done
+
+        exit 0
+    fi
+
     # -------- TOP MODE (-t) --------
     # Add text to the top of all Markdown files
     if [[ "$flag" == "-t" ]]; then
@@ -477,8 +512,8 @@ if [[ "$action" == "all" ]]; then
 	echo -e "${CYAN}[3/9] CONVERT -m — converting all .docx files${RESET}"
     loop.sh convert -m
 
-
-
+	echo -e "${CYAN}[4/9] INSERT -m — Dynamic: Folder name at top, README link at bottom${RESET}"
+    loop.sh insert -d
 
     echo -e "${GREEN}ALL actions completed.${RESET}"
     exit 0
