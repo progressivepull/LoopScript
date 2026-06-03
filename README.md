@@ -1,131 +1,200 @@
-# LoopScript
+**loop.sh — Multi‑Tool Project Automation Script**
 
-# Reference
-## Pandoc
-* [Pandoc Official Website](https://pandoc.org/)
+loop.sh is a flexible Bash automation utility designed to streamline
+repetitive project‑wide tasks such as creating folders, converting .docx
+files, moving files, replacing text, inserting content, and cleaning up
+Markdown‑based projects.
 
-``` bash
-pandoc -t gfm --extract-media . "main.docx" -o main.md
-```
+It supports **recursive operations**, **dry‑run safety**, **colored
+output**, and **pattern‑based folder generation**.
 
-## Microsoft Word Code Style
-* [MS Word Create style for code snippet box  | Leon Renner | YouTube](https://www.youtube.com/watch?v=busnzKKSOxU)
+**🚀 Features**
 
----
-# loop.sh
+- **Create** sequentially numbered folders using patterns
 
-## 📦 Installation
-Make the script executable:
+- **Delete** files or folders (with optional --dry mode)
 
-``` bash
-chmod +x loop.sh
-```
-Run it:
+- **Convert** .docx → .md (single or recursive) using Pandoc
 
-``` bash
-./loop.sh help
-```
+- **Move** files into matching folders automatically
 
-## 📁 Folder Creation
+- **Replace** text across all Markdown files
 
-Create a range of folders using a pattern:
+- **Insert** text at the top or bottom of Markdown files
 
-``` bash
-./loop.sh create -f <start> <end> '<pattern>'
-```
+- **Status** scan of all .md and \_media directories
+
+- **Help** menu with full usage instructions
+
+**📦 Requirements**
+
+- **Bash 4+**
+
+- **Pandoc** (for .docx → .md conversion)
+
+- colors.sh file in the same directory (provides ANSI color variables)
+
+**📘 Usage Overview**
+
+Code
+
+loop.sh \<action\> \<flag\> \[arguments\]
+
+Run loop.sh help at any time to display the full help menu.
+
+**🧱 Commands**
+
+**1. 📁 Create Folders**
+
+Create sequentially numbered folders using a wildcard pattern:
+
+Code
+
+loop.sh create -f \<start\> \<end\> '\<pattern\>'
+
 Example:
 
-``` bash
-./loop.sh create -f 1 5 'PROBLEM_*'
-```
+Code
+
+loop.sh create -f 1 5 'chapter\_\*'
+
 Creates:
 
-```
-PROBLEM_1
-PROBLEM_2
-PROBLEM_3
-PROBLEM_4
-PROBLEM_5
-```
+Code
 
+chapter_1/
 
-## 🗑️ Deleting Files and Folders
+chapter_2/
 
-All delete commands support dry‑run mode:
+chapter_3/
 
-``` bash
---dry
-```
+chapter_4/
 
-### Delete a specific name everywhere
+chapter_5/
 
-Deletes:
+**2. 🗑️ Delete Files or Folders**
 
-* <name>.md
-* <name>_media/
+**Delete a folder:**
 
-``` bash
-./loop.sh delete -s <name>
-```
-### Delete inside each PROBLEM_X directory
+Code
 
-``` bash
-./loop.sh delete -m
-```
-### Delete a folder
-``` bash
-./loop.sh delete -d <folder>
-```
+loop.sh delete -d \<folder\>
 
-### Example dry‑run
+**Delete \<name\>.md and \<name\>\_media everywhere:**
 
-``` bash
-./loop.sh delete -s PROBLEM_3 --dry
-```
+Code
 
-## 🔄 Converting Documents
+loop.sh delete -s \<name\>
 
-### Convert a single .docx file
+**Dry‑run mode (no changes):**
 
-``` bash
-./loop.sh convert -s <file_name>
-```
+Code
 
-### Convert all .docx files recursively
+loop.sh delete -s \<name\> --dry
 
-``` bash
-./loop.sh convert -m
-```
+loop.sh delete -d \<folder\> --dry
 
-Each .docx produces:
+**3. 📊 Status Scan**
 
-* <name>.md
-* <name>_media/
-  
-## 📦 Move Files Into Matching Folders
+List all Markdown files and \_media directories:
+
+Code
+
+loop.sh status
+
+**4. 🔄 Convert .docx → .md**
+
+**Convert a single file:**
+
+Code
+
+loop.sh convert -s \<filename\>
+
+Converts:
+
+Code
+
+filename.docx → filename.md
+
+**Convert all .docx files recursively:**
+
+Code
+
+loop.sh convert -m
+
+Each file gets its own \<name\>\_media folder.
+
+**5. 📦 Move Files Into Matching Folders**
+
 Moves any file into a folder with the same base name:
 
-``` bash
-./loop.sh move
-```
+Code
+
+loop.sh move
+
 Example:
 
-``` bash
-notes.txt → notes/notes.txt
-```
+Code
 
-## 📊 Project Status
-Scan the entire project for .md files and _media folders:
+notes.md → notes/notes.md
 
-``` bash
-./loop.sh status
-```  
+**6. ✏️ Replace Text in Markdown Files**
 
-## 🧹 Clean (Safe Mode)
-Lists everything that would be deleted:
+Recursively replace text in all .md files:
 
-``` bash
-./loop.sh clean
-```
-This mode is non‑destructive.
-Deletion lines are commented out in the script for safety.
+Code
+
+loop.sh replace -m \<old_text\> \<new_text\>
+
+**7. ➕ Insert Text Into Markdown Files**
+
+**Insert at top:**
+
+Code
+
+loop.sh insert -t "\<text\>"
+
+**Insert at bottom:**
+
+Code
+
+loop.sh insert -b "\<text\>"
+
+**🧩 File Structure Example**
+
+Code
+
+project/
+
+│
+
+├── loop.sh
+
+├── colors.sh
+
+├── chapter_1/
+
+│ ├── notes.md
+
+│ └── notes_media/
+
+│
+
+├── chapter_2/
+
+│ └── ...
+
+└── report.docx
+
+**🛡️ Safety Notes**
+
+- --dry mode is available for delete operations
+
+- Recursive operations use globstar and nullglob to avoid errors
+
+- Script prints colored confirmations for every action
+
+**📄 License**
+
+This script is free to use, modify, and integrate into your own
+workflow.
