@@ -18,7 +18,11 @@ echo ""
 echo "Running ALL pipeline inside $TEST_DIR"
 echo "--------------------------------------"
 
-loop.sh all
+
+(
+    cd "$TEST_DIR" || exit
+    loop.sh all
+)
 
 echo ""
 echo "Final directory structure:"

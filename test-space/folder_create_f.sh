@@ -3,18 +3,18 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOOP_SCRIPT="$SCRIPT_DIR/../loop.sh"
 
-# Source colors.sh from parent (LoopScript/)
+# Load colors
 source "$SCRIPT_DIR/../colors.sh"
 
-# folder_create.sh
+# folder_create_f.sh
 # Test script for: loop.sh create -f <start> <end> '<pattern>'
 
-TEST_DIR="test_folder_creation"
+TEST_DIR="test_create_f"
 
 echo -e "${MAGENTA}Running folder creation test...${RESET}"
 echo ""
 
-# Create a clean test directory
+# Reset test directory
 rm -rf "$TEST_DIR"
 mkdir "$TEST_DIR"
 cd "$TEST_DIR" || exit
@@ -27,7 +27,6 @@ echo ""
 echo "Checking results..."
 echo ""
 
-# Track results
 PASS=true
 
 for i in {1..5}; do

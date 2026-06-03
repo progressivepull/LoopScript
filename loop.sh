@@ -12,6 +12,9 @@ show_help() {
     echo -e "  ${CYAN}loop.sh${RESET} create -f <start> <end> '<pattern>'"
 	echo -e "      ${RED}Wildcard matches characters, while script creates sequentially numbered folders using ranges and customizable naming patterns.${RESET}"
     echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} create -m"
+	echo -e "      ${RED}Scans the current directory, reads each filename, and creates a folder named after the file (without extension).${RESET}"
+	echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} delete -s <name>"
     echo -e "      ${RED}Delete <name>.md and <name>_media in all directories.${RESET}"
     echo -e ""
@@ -64,6 +67,26 @@ fi
 
 # Check if the requested action is "create"
 if [[ "$action" == "create" ]]; then
+
+	# Usage: ./script.sh create -m
+	if [[ "$flag" == "-m" ]]; then
+		echo "Running 'create -m' (scan files, create folders)"
+
+		# Loop through all files in the current directory
+		for file in *; do
+			# Skip directories
+			[[ -d "$file" ]] && continue
+
+			# Extract base name without extension
+			name="${file%.*}"
+
+			# Create folder
+			mkdir -p "$name"
+
+			echo "Created folder: $name"
+		done
+
+	fi
 
 
 	# Check if the flag provided is "-f" (indicates folder creation with a range)
@@ -446,41 +469,10 @@ if [[ "$action" == "all" ]]; then
     files=( * )
 
     echo -e "${CYAN}[1/9] CREATE — creating folders for each file${RESET}"
-    for f in "${files[@]}"; do
-        [[ -d "$f" ]] && continue   # skip directories
-        base="${f%.*}"
-        mkdir -p "$base"
-        echo -e "${GREEN}Created:${RESET} $base"
-    done
 
-    echo -e "${CYAN}[2/9] DELETE -s — deleting matching .md and _media${RESET}"
-    for f in "${files[@]}"; do
-        [[ -d "$f" ]] && continue
-        base="${f%.*}"
-        ./loop.sh delete -s "$base"
-    done
 
-    echo -e "${CYAN}[3/9] DELETE -d — deleting empty folders named 'old'${RESET}"
-    # Example: delete folder named "old" if exists
-    [[ -d "old" ]] && ./loop.sh delete -d "old"
 
-    echo -e "${CYAN}[4/9] STATUS — scanning project${RESET}"
-    ./loop.sh status
 
-    echo -e "${CYAN}[5/9] CONVERT -m — converting all .docx files${RESET}"
-    ./loop.sh convert -m
-
-    echo -e "${CYAN}[6/9] MOVE — moving files into matching folders${RESET}"
-    ./loop.sh move
-
-    echo -e "${CYAN}[7/9] REPLACE -m — replacing text in all Markdown files${RESET}"
-    ./loop.sh replace -m "OLD_TEXT" "NEW_TEXT"
-
-    echo -e "${CYAN}[8/9] INSERT -t — inserting text at top of all Markdown files${RESET}"
-    ./loop.sh insert -t "Inserted at top"
-
-    echo -e "${CYAN}[9/9] INSERT -b — inserting text at bottom of all Markdown files${RESET}"
-    ./loop.sh insert -b "Inserted at bottom"
 
     echo -e "${GREEN}ALL actions completed.${RESET}"
     exit 0
