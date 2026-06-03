@@ -434,3 +434,54 @@ if [[ "$action" == "insert" ]]; then
     echo "Usage: loop.sh insert -t <text> | -b <text>"
     exit 1
 fi
+
+# ─────────────────────────────────────────────
+# ALL — Dynamic full‑pipeline automation
+# ─────────────────────────────────────────────
+if [[ "$action" == "all" ]]; then
+    echo -e "${BLUE}Running ALL actions in sequence...${RESET}"
+
+    # Read all file names (non-directories)
+    shopt -s nullglob
+    files=( * )
+
+    echo -e "${CYAN}[1/9] CREATE — creating folders for each file${RESET}"
+    for f in "${files[@]}"; do
+        [[ -d "$f" ]] && continue   # skip directories
+        base="${f%.*}"
+        mkdir -p "$base"
+        echo -e "${GREEN}Created:${RESET} $base"
+    done
+
+    echo -e "${CYAN}[2/9] DELETE -s — deleting matching .md and _media${RESET}"
+    for f in "${files[@]}"; do
+        [[ -d "$f" ]] && continue
+        base="${f%.*}"
+        ./loop.sh delete -s "$base"
+    done
+
+    echo -e "${CYAN}[3/9] DELETE -d — deleting empty folders named 'old'${RESET}"
+    # Example: delete folder named "old" if exists
+    [[ -d "old" ]] && ./loop.sh delete -d "old"
+
+    echo -e "${CYAN}[4/9] STATUS — scanning project${RESET}"
+    ./loop.sh status
+
+    echo -e "${CYAN}[5/9] CONVERT -m — converting all .docx files${RESET}"
+    ./loop.sh convert -m
+
+    echo -e "${CYAN}[6/9] MOVE — moving files into matching folders${RESET}"
+    ./loop.sh move
+
+    echo -e "${CYAN}[7/9] REPLACE -m — replacing text in all Markdown files${RESET}"
+    ./loop.sh replace -m "OLD_TEXT" "NEW_TEXT"
+
+    echo -e "${CYAN}[8/9] INSERT -t — inserting text at top of all Markdown files${RESET}"
+    ./loop.sh insert -t "Inserted at top"
+
+    echo -e "${CYAN}[9/9] INSERT -b — inserting text at bottom of all Markdown files${RESET}"
+    ./loop.sh insert -b "Inserted at bottom"
+
+    echo -e "${GREEN}ALL actions completed.${RESET}"
+    exit 0
+fi
