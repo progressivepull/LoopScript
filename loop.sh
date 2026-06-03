@@ -68,7 +68,7 @@ fi
 # Check if the requested action is "create"
 if [[ "$action" == "create" ]]; then
 
-	# Usage: ./script.sh create -m
+	# Usage: loop.sh create -m
 	if [[ "$flag" == "-m" ]]; then
 		echo "Running 'create -m' (scan files, create folders)"
 

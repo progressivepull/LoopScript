@@ -46,7 +46,7 @@ Run loop.sh help at any time to display the full help menu.
 
 **1. 📁 Create Folders**
 
-Create sequentially numbered folders using a wildcard pattern:
+📂 create -f sequentially numbered folders using a wildcard pattern:
 
 Code
 
@@ -76,6 +76,44 @@ chapter_4/
 
 chapter_5/
 ```
+
+📂 create -f — Mirror Filenames Into Folders
+
+The create -m action scans the current directory, reads each filename, strips its extension, and creates a folder with that base name.
+
+This is useful for organizing mixed file sets into structured directories.
+
+✅ Usage
+``` bash
+loop.sh create -m
+```
+
+📌 Example
+If your directory contains:
+
+Code
+```
+alpha.txt
+beta.md
+gamma.json
+```
+
+**Running:**
+
+Code
+``` bash
+loop.sh create -m
+```
+
+**Produces:**
+
+Code
+```
+alpha/
+beta/
+gamma/
+```
+
 
 **2. 🗑️ Delete Files or Folders**
 
