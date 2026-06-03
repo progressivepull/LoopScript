@@ -51,7 +51,7 @@ Create sequentially numbered folders using a wildcard pattern:
 Code
 
 ``` bash
-loop.sh create -f \<start\> \<end\> '\<pattern\>'
+loop.sh create -f <start> <end> '<pattern>'
 ```
 
 Example:
@@ -59,7 +59,7 @@ Example:
 Code
 
 ``` bash
-loop.sh create -f 1 5 'chapter\_\*'
+loop.sh create -f 1 5 'chapter_*'
 ```
 
 Creates:
