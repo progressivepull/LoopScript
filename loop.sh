@@ -474,7 +474,7 @@ if [[ "$action" == "all" ]]; then
 	echo -e "${CYAN}[2/9] MOVE — moving files into matching folders${RESET}"
     loop.sh move
 	
-	echo -e "${CYAN}[2/9] CONVERT -m — converting all .docx files${RESET}"
+	echo -e "${CYAN}[3/9] CONVERT -m — converting all .docx files${RESET}"
     loop.sh convert -m
 
 
