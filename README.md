@@ -40,13 +40,13 @@ output**, and **pattern‑based folder generation**.
 
 # **📘 Usage Overview**
 
-``` ``` bash
+``` bash
 loop.sh <action> <flag> [arguments]
 ```
 
 Run:
 
-``` ``` bash
+``` bash
 loop.sh help
 ```
 
