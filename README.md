@@ -1,4 +1,4 @@
-**loop.sh — Multi‑Tool Project Automation Script**
+# **loop.sh — Multi‑Tool Project Automation Script**
 
 loop.sh is a flexible Bash automation utility designed to streamline
 repetitive project‑wide tasks such as creating folders, converting .docx
@@ -8,7 +8,7 @@ Markdown‑based projects.
 It supports **recursive operations**, **dry‑run safety**, **colored
 output**, and **pattern‑based folder generation**.
 
-**🚀 Features**
+# **🚀 Features**
 
 - **Create** sequentially numbered folders using patterns
 
@@ -26,15 +26,15 @@ output**, and **pattern‑based folder generation**.
 
 - **Help** menu with full usage instructions
 
-**📦 Requirements**
+# **📦 Requirements**
 
 - **Bash 4+**
 
-- **Pandoc** (for .docx → .md conversion)
+- **[Pandoc](https://pandoc.org/)** (for .docx → .md conversion)
 
 - colors.sh file in the same directory (provides ANSI color variables)
 
-**📘 Usage Overview**
+# **📘 Usage Overview**
 
 Code
 
@@ -66,15 +66,11 @@ Creates:
 
 Code
 ```
-chapter_1/
-
-chapter_2/
-
-chapter_3/
-
-chapter_4/
-
-chapter_5/
+chapter_1
+chapter_2
+chapter_3
+chapter_4
+chapter_5
 ```
 
 📂 create -f — Mirror Filenames Into Folders
