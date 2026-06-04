@@ -30,7 +30,7 @@ output**, and **pattern‑based folder generation**.
 
 - **Help** menu with full usage instructions
 
-**📦 Requirements**
+# **📦 Requirements**
 
 - **bash 4+**
 
