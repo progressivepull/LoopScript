@@ -54,7 +54,7 @@ to display the full help menu.
 
 # **🧱 Commands**
 
-**1. 📁 Create Folders**
+## **1. 📁 Create Folders**
 
 **Pattern‑based sequential folders**
 
@@ -106,7 +106,7 @@ beta
 gamma
 ```
 
-**2. 🗑️ Delete Files or Folders**
+## **2. 🗑️ Delete Files or Folders**
 
 **Delete a folder**
 
@@ -128,7 +128,7 @@ loop.sh delete -d <folder> --dry
 loop.sh delete -s <name> --dry
 ```
 
-**3. 📊 Status Scan**
+## **3. 📊 Status Scan**
 
 List all Markdown files and \_media directories:
 
@@ -136,7 +136,7 @@ List all Markdown files and \_media directories:
 loop.sh status
 ```
 
-**4. 🔄 Convert .docx → .md**
+## **4. 🔄 Convert .docx → .md**
 
 **Convert a single file**
 
@@ -160,7 +160,7 @@ loop.sh convert -m
 
 Each file gets its own \<name\>\_media folder.
 
-**5. 📦 Move Files Into Matching Folders**
+## **5. 📦 Move Files Into Matching Folders**
 
 Moves any file into a folder with the same base name:
 
@@ -175,7 +175,7 @@ Code
 notes.md → notes/notes.md
 ```
 
-**6. ✏️ Replace Text in Markdown Files**
+## **6. ✏️ Replace Text in Markdown Files**
 
 Recursively replace text in all .md files:
 
@@ -183,7 +183,7 @@ Recursively replace text in all .md files:
 loop.sh replace -m <old_text> <new_text>
 ```
 
-**7. ➕ Insert Text Into Markdown Files**
+## **7. ➕ Insert Text Into Markdown Files**
 
 **Insert at top**
 
@@ -211,7 +211,7 @@ This performs:
 
 - Appends a README link at the bottom
 
-**8. 🔁 ALL — Full Automation Pipeline**
+## **8. 🔁 ALL — Full Automation Pipeline**
 
 Runs a full sequence:
 
@@ -227,7 +227,7 @@ Runs a full sequence:
 loop.sh all
 ```
 
-**9. ⏪ UNDO — Restore .docx Files and Remove Folders**
+## **9. ⏪ UNDO — Restore .docx Files and Remove Folders**
 
 Moves .docx files back to the parent directory, then deletes the
 folders:
