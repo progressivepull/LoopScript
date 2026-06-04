@@ -32,7 +32,7 @@ output**, and **pattern‑based folder generation**.
 
 **📦 Requirements**
 
-- **``` bash 4+**
+- **bash 4+**
 
 - **[Pandoc](https://pandoc.org/)**  (for .docx → .md conversion)
 
