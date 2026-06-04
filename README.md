@@ -38,7 +38,9 @@ output**, and **pattern‑based folder generation**.
 
 Code
 
-loop.sh \<action\> \<flag\> \[arguments\]
+``` bash
+loop.sh <action> <flag> [arguments]
+```
 
 Run loop.sh help at any time to display the full help menu.
 
