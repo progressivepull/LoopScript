@@ -211,7 +211,7 @@ Code
 loop.sh insert -b "<text>"
 ```
 
-**🧩 File Structure Example**
+# **🧩 File Structure Example**
 
 Code
 ```
