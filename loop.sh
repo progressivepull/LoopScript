@@ -48,6 +48,9 @@ show_help() {
     echo -e "  ${CYAN}loop.sh${RESET} insert -d"         
 	echo -e "      ${RED}Dynamic: Folder name at top, README link at bottom${RESET}"
 	echo -e ""
+	echo -e "  ${CYAN}loop.sh${RESET} undo"         
+	echo -e "      ${RED}UNDO — Move .docx out of folders, then delete folder"
+	echo -e ""
     echo -e "  ${CYAN}loop.sh${RESET} help"
 	echo -e "      ${RED}Display available commands, options, examples, and script usage information.${RESET}"
     echo -e ""
@@ -518,3 +521,52 @@ if [[ "$action" == "all" ]]; then
     echo -e "${GREEN}ALL actions completed.${RESET}"
     exit 0
 fi
+
+# ─────────────────────────────────────────────
+# UNDO — Move .docx out of folders, then delete folder
+# ─────────────────────────────────────────────
+if [[ "$action" == "undo" ]]; then
+
+    dry_run=false
+    for arg in "$@"; do
+        [[ "$arg" == "--dry" ]] && dry_run=true
+    done
+
+    shopt -s globstar nullglob
+
+    echo -e "${BLUE}Running UNDO: moving .docx files to parent and deleting folders...${RESET}"
+
+    # Loop through all directories
+    for dir in */; do
+        [[ ! -d "$dir" ]] && continue
+
+        # Find .docx files inside this folder
+        docx_files=( "$dir"/*.docx )
+
+        # Skip if no .docx files
+        [[ ${#docx_files[@]} -eq 0 ]] && continue
+
+        # Process each .docx file
+        for f in "${docx_files[@]}"; do
+            base=$(basename "$f")
+
+            if [[ "$dry_run" == true ]]; then
+                echo -e "${YELLOW}[DRY] Would move:${RESET} $f → ./"
+            else
+                mv "$f" "./"
+                echo -e "${GREEN}Moved:${RESET} $f → ./"
+            fi
+        done
+
+        # Delete folder after moving files
+        if [[ "$dry_run" == true ]]; then
+            echo -e "${YELLOW}[DRY] Would delete folder:${RESET} $dir"
+        else
+            rm -rf "$dir"
+            echo -e "${GREEN}Deleted folder:${RESET} $dir"
+        fi
+    done
+
+    exit 0
+fi
+
