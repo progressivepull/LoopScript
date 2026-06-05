@@ -1,0 +1,4 @@
+$ pandoc print.docx -t native
+[ Para [ Str "print(\"Hello\")" ]
+, Para [ Str "print(\"Hello\")" ]
+]
